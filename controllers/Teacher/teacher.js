@@ -92,8 +92,53 @@ const createRoom = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const getTeacherRooms = catchAsyncErrors(async (req, res) => {
+  const { teacher_id: teacherID } = req.params;
+
+  const rooms = await Room.find({ creator: teacherID })
+    .sort("-createdAt")
+    .populate({
+      path: "members",
+      model: "Student",
+    });
+
+  if (!rooms) {
+    return res.status(401).send({ success: false, message: "No data found" });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Found all rooms of teacher",
+    data: JSON.stringify(rooms),
+  });
+});
+
+const getTeacherQuizzes = catchAsyncErrors(async (req, res) => {
+  const { teacher_id: teacherID } = req.params;
+
+  const quizzes = await QUiz.find({ creator: teacherID })
+    .sort("-createdAt")
+    .populate("room")
+    .populate({
+      path: "questions",
+      model: "Question",
+    });
+
+  if (!quizzes) {
+    return res.status(401).send({ success: false, message: "No data found" });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Found all the quizees of teacher",
+    data: JSON.stringify(quizzes),
+  });
+});
+
 module.exports = {
   createTeacherAccount,
   loginForTeacher,
   createRoom,
+  getTeacherRooms,
+  getTeacherQuizzes,
 };

@@ -1,4 +1,5 @@
 const Student = require("../../models/student");
+const Room = require("../../models/room");
 
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 
@@ -39,7 +40,28 @@ const loginForStudent = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
+  const studentID = req.userId;
+
+  const rooms = await Room.find({ members: { $in: [studentID] } }).sort(
+    "-createdAt"
+  );
+
+  if (!rooms) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Failed to find any rooms" });
+  }
+  res.status(201).json({
+    success: true,
+    message: "found the rooms",
+    data: JSON.stringify(rooms),
+    count: rooms.length,
+  });
+});
+
 module.exports = {
   createStudentAccount,
   loginForStudent,
+  getRoomsJoinedByStud,
 };
