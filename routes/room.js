@@ -1,15 +1,15 @@
 const express = require("express");
-const {
-  createQuiz,
-  addQUestionToQuizByROomID,
-} = require("../controllers/Quiz/quiz");
-const { joinRoom } = require("../controllers/Room/room");
+const { createQuiz } = require("../controllers/Quiz/quiz");
+const { joinRoom, getSpecificRoom } = require("../controllers/Room/room");
 const { addTopicToRoom, summaryOfRoom } = require("../controllers/Room/topics");
 const verifyToken = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.route("/:id").patch(verifyToken, joinRoom);
+router
+  .route("/:id")
+  .patch(verifyToken, joinRoom)
+  .get(verifyToken, getSpecificRoom);
 
 router
   .route("/:id/topics")

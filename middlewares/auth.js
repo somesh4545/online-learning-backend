@@ -3,7 +3,12 @@ const jwt = require("jsonwebtoken");
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
   if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res
+      .status(401)
+      .json({
+        success: false,
+        message: "Unauthorized, Please provide authorization token.",
+      });
   }
 
   try {
@@ -11,7 +16,10 @@ function verifyToken(req, res, next) {
     req.userId = decoded.id;
     next();
   } catch (err) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized, Please provide authorization token.",
+    });
   }
 }
 
