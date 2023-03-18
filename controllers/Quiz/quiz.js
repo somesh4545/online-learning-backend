@@ -52,7 +52,7 @@ const getQuizByID = catchAsyncErrors(async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Quiz",
-      data: quiz,
+      data: JSON.stringify(quiz),
     });
   }
 });
@@ -88,7 +88,7 @@ const addQUestionToQuiz = catchAsyncErrors(async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Question added sucessfully",
-      data: newQuestion,
+      data: JSON.stringify(newQuestion),
     });
   }
 });
@@ -136,7 +136,7 @@ const addResponse = catchAsyncErrors(async (req, res) => {
   res.status(200).json({
     success: true,
     message: `Added response with ${response._id} .`,
-    data: response,
+    data: JSON.stringify(response),
   });
 });
 
@@ -154,7 +154,7 @@ const getAllResponses = catchAsyncErrors(async (req, res) => {
   res.status(200).json({
     success: true,
     message: `Found responses .`,
-    data: responses,
+    data: JSON.stringify(responses),
   });
 });
 
@@ -174,7 +174,7 @@ const getResponseByResponseID = catchAsyncErrors(async (req, res) => {
   res.status(200).json({
     success: true,
     message: `Found ${response._id} .`,
-    data: response,
+    data: JSON.stringify(response),
   });
 });
 
@@ -190,7 +190,7 @@ const deleteResponse = catchAsyncErrors(async (req, res) => {
   res.status(200).json({
     success: true,
     message: `Response deleted succesfully ${response._id} `,
-    data: response,
+    data: JSON.stringify(response),
   });
 });
 

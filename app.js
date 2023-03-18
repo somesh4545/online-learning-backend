@@ -9,9 +9,18 @@ const teacherRouter = require("./routes/teacher");
 const studentRouter = require("./routes/student");
 const roomRouter = require("./routes/room");
 const quizRouter = require("./routes/quiz");
+const personalizationRouter = require("./routes/personalization");
 
 const connectToDB = require("./db/connect");
+const storage = require("node-persist");
 require("dotenv").config();
+
+storage.init({
+  stringify: JSON.stringify,
+
+  parse: JSON.parse,
+  ttl: 5 * 60 * 1000,
+});
 
 // middleware
 app.use(express.json());
@@ -31,6 +40,9 @@ app.use("/api/v1/room", roomRouter);
 
 // quiz router
 app.use("/api/v1/quiz", quizRouter);
+
+// personalizationRouter
+app.use("/api/v1/personalization", personalizationRouter);
 
 const port_no = process.env.PORT || 5000;
 

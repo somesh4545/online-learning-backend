@@ -24,7 +24,7 @@ const joinRoom = catchAsyncErrors(async (req, res) => {
   }
   return res
     .status(201)
-    .send({ success: true, message: "added member to the room" });
+    .send({ success: true, message: "added student to the room" });
 });
 
 const getSpecificRoom = catchAsyncErrors(async (req, res) => {
@@ -54,7 +54,37 @@ const getSpecificRoom = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const addAttentionOfStudent = catchAsyncErrors(async (req, res) => {
+  const { id: roomID } = req.params;
+  const studentID = req.userId;
+
+  const body = req.body;
+
+  const updatedRoom = await Room.findOneAndUpdate(
+    { _id: roomID },
+    {
+      $addToSet: {
+        analysis: { student: studentID, attention: body.attention },
+      },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updatedRoom) {
+    return res
+      .status(401)
+      .send({ success: false, message: "failed to update" });
+  }
+  return res
+    .status(201)
+    .send({ success: true, message: "added students attention to the room" });
+});
+
 module.exports = {
   joinRoom,
   getSpecificRoom,
+  addAttentionOfStudent,
 };
