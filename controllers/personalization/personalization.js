@@ -51,10 +51,12 @@ const personalizationForStudent = catchAsyncErrors(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.log(
+          `${err.response.data.error.code} - ${err.response.data.error.message} `
+        );
         return res.status(400).send({
           success: false,
-          message: "error occured",
+          message: `${err.response.data.error.code} - ${err.response.data.error.message} `,
         });
       });
   } else {
@@ -85,7 +87,7 @@ const guidanceForTeacher = catchAsyncErrors(async (req, res) => {
 
     const params = {
       model: "text-davinci-003",
-      prompt: `As an AI mentor, you can assist teachers in enhancing their teaching techniques. Your role is to provide alternative explanations for topics that students may find challenging, and guide teachers on how to effectively communicate these concepts. When given a topic that students are struggling with, provide a clear and concise explanation that a teacher could use to enhance their lesson plan and guide the teacher. If you're not familiar with the topic, simply return "false"\nHuman:${body.topic}\nAI:`,
+      prompt: `As an AI mentor, you can assist teachers in enhancing their teaching techniques. Your role is to provide alternative explanations for topics that students may find challenging, and guide teachers on how to effectively communicate these concepts. When given a topic that students are struggling with, provide a clear and concise explanation that a teacher could use to enhance their lesson plan and guide the teacher. If you're not familiar with the topic, simply return "false" \nHuman:${body.topic}\nAI:`,
       max_tokens: 300,
       temperature: 0.7,
       top_p: 1,
@@ -117,10 +119,12 @@ const guidanceForTeacher = catchAsyncErrors(async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.log(
+          `${err.response.data.error.code} - ${err.response.data.error.message} `
+        );
         return res.status(400).send({
           success: false,
-          message: ` error occured `,
+          message: `${err.response.data.error.code} - ${err.response.data.error.message} `,
         });
       });
   } else {
