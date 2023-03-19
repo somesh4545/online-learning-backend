@@ -19,8 +19,8 @@ storage.init({
   stringify: JSON.stringify,
 
   parse: JSON.parse,
-  ttl: 5 * 60 * 1000,
-  dir: "storage",
+  ttl: 10 * 60 * 1000,
+  dir: "node-storage",
 });
 
 // middleware
