@@ -18,8 +18,8 @@ const personalizationForStudent = catchAsyncErrors(async (req, res) => {
     });
 
     const params = {
-      model: "text-curie-001",
-      prompt: `As an excellent teacher, you have the power to explain any topic in a way that a 12-year-old can understand. You'll be given a topic summary that you may not fully comprehend, and your job is to provide a simple explanation that even a child can grasp. If possible, please include an example to illustrate your point. If you're not familiar with the topic, simply return \"false\"\nHuman:${body.topic}\nAI:`,
+      model: "text-davinci-003",
+      prompt: `As an excellent teacher, you have the power to explain any topic in a way that a 12-year-old can understand. You'll be given a topic summary that you may not fully comprehend, and your job is to provide a simple explanation that even a child can grasp. If possible, please include an example to illustrate your point. If you're not familiar with the topic, simply return "false" \nHuman:${body.topic}\nAI:`,
       max_tokens: 300,
       temperature: 0.7,
       top_p: 1,
@@ -27,37 +27,46 @@ const personalizationForStudent = catchAsyncErrors(async (req, res) => {
       presence_penalty: 0,
     };
 
-    const result = await client.post(
-      "https://api.openai.com/v1/completions",
-      params
-    );
+    client
+      .post("https://api.openai.com/v1/completions", params)
+      .then((response) => {
+        var simplerExplanation = response.data.choices[0].text.trim();
 
-    if (!result || result.data.choices[0] == "false") {
-      return res.status(401).send({
-        success: false,
-        message: "failed to find simpler explanation",
+        if (!simplerExplanation || simplerExplanation == "false") {
+          return res.status(401).send({
+            success: false,
+            message: "failed to find simpler explanation",
+          });
+        }
+
+        storage.setItem(body.topic, simplerExplanation);
+
+        return res.status(201).send({
+          success: true,
+          message: "found simpler explanation from open ai",
+          data: JSON.stringify({
+            simplerExplanation: simplerExplanation,
+            topic: body.topic,
+          }),
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(400).send({
+          success: false,
+          message: "error occured",
+        });
       });
-    }
-
-    storage.setItem(body.topic, result.data.choices[0].text);
-
+  } else {
     return res.status(201).send({
       success: true,
-      message: "found simpler explanation from open ai",
+      message: "found simpler explanation from local storage",
       data: JSON.stringify({
-        simplerExplanation: result.data.choices[0].text,
+        simplerExplanation: value,
         topic: body.topic,
       }),
     });
   }
-  return res.status(201).send({
-    success: true,
-    message: "found simpler explanation from local storage",
-    data: JSON.stringify({
-      simplerExplanation: value,
-      topic: body.topic,
-    }),
-  });
 });
 
 const guidanceForTeacher = catchAsyncErrors(async (req, res) => {
@@ -84,39 +93,46 @@ const guidanceForTeacher = catchAsyncErrors(async (req, res) => {
       presence_penalty: 0,
     };
 
-    const result = await client.post(
-      "https://api.openai.com/v1/completions",
-      params
-    );
+    client
+      .post("https://api.openai.com/v1/completions", params)
+      .then((response) => {
+        var simplerExplanation = response.data.choices[0].text.trim();
 
-    var simplerExplanation = result.data.choices[0].text.trim();
+        if (!response || simplerExplanation == "false") {
+          return res.status(401).send({
+            success: false,
+            message: "failed to find simpler explanation",
+          });
+        }
 
-    if (!result || simplerExplanation == "false") {
-      return res.status(401).send({
-        success: false,
-        message: "failed to find simpler explanation",
+        storage.setItem("teacher: " + body.topic, simplerExplanation);
+
+        return res.status(201).send({
+          success: true,
+          message: "found simpler guidance/explanation from open ai",
+          data: JSON.stringify({
+            simplerExplanation: simplerExplanation,
+            topic: body.topic,
+          }),
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(400).send({
+          success: false,
+          message: ` error occured `,
+        });
       });
-    }
-
-    storage.setItem("teacher: " + body.topic, simplerExplanation);
-
+  } else {
     return res.status(201).send({
       success: true,
-      message: "found simpler guidance/explanation from open ai",
+      message: "found simpler guidance/explanation from local storage",
       data: JSON.stringify({
-        simplerExplanation: simplerExplanation,
+        simplerExplanation: value,
         topic: body.topic,
       }),
     });
   }
-  return res.status(201).send({
-    success: true,
-    message: "found simpler guidance/explanation from local storage",
-    data: JSON.stringify({
-      simplerExplanation: value,
-      topic: body.topic,
-    }),
-  });
 });
 
 module.exports = {

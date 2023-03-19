@@ -20,7 +20,7 @@ storage.init({
 
   parse: JSON.parse,
   ttl: 5 * 60 * 1000,
-  dir: "/storage",
+  dir: "storage",
 });
 
 // middleware
