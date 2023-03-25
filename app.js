@@ -50,8 +50,67 @@ const port_no = process.env.PORT || 5000;
 const start = async () => {
   try {
     await connectToDB(process.env.MONGO_URI);
-    app.listen(port_no, () => {
+    const server = app.listen(port_no, () => {
       console.log(`listening on port ${port_no}`);
+    });
+
+    const io = require("socket.io")(server, {
+      pingTimeout: 60000,
+      cors: {
+        origin: "*",
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log(`⚡: ${socket.id} user just connected!`);
+      socket.on("setup", (userData) => {
+        // console.log("connection created " + JSON.stringify(userData));
+      });
+
+      socket.on("create_room", (roomID) => {
+        socket.join(roomID);
+        console.log("room created " + roomID);
+      });
+
+      socket.on("join_room", (data) => {
+        socket.join(data._id);
+
+        console.log(
+          "user joined to chat room " +
+            data._id +
+            " user id " +
+            data.student._id
+        );
+        data.student.joinedTime = new Date().toLocaleTimeString();
+        data.student.attention = 100;
+        socket.in(data._id).emit("new_joinee", data.student);
+      });
+
+      socket.on("update_attention", (data) => {
+        socket.in(data._id).emit("joinee_attention", {
+          student: data.student,
+          attention: data.attention,
+        });
+      });
+
+      socket.on("leave_room", (data) => {
+        socket.leave(data._id);
+        socket.in(data._id).emit("joinee_left", data.student);
+      });
+
+      socket.on("close_room", (data) => {
+        io.in(data._id).socketsLeave(data._id);
+        console.log("all students left the session");
+      });
+
+      socket.on("new_message", (payload) => {
+        var chat = JSON.parse(payload);
+      });
+
+      socket.off("setup", () => {
+        console.log("USER DISCONNECTED");
+        socket.leave(userData._id);
+      });
     });
   } catch (error) {
     console.log(error);

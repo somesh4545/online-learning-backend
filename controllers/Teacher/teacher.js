@@ -100,7 +100,8 @@ const getTeacherRooms = catchAsyncErrors(async (req, res) => {
     .populate({
       path: "members",
       model: "Student",
-    });
+    })
+    .limit(10);
 
   if (!rooms) {
     return res.status(401).send({ success: false, message: "No data found" });
