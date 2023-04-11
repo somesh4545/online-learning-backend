@@ -10,6 +10,7 @@ const studentRouter = require("./routes/student");
 const roomRouter = require("./routes/room");
 const quizRouter = require("./routes/quiz");
 const personalizationRouter = require("./routes/personalization");
+const commonRouter = require("./routes/common");
 
 const connectToDB = require("./db/connect");
 const storage = require("node-persist");
@@ -44,6 +45,9 @@ app.use("/api/v1/quiz", quizRouter);
 
 // personalizationRouter
 app.use("/api/v1/personalization", personalizationRouter);
+
+// common router files
+app.use("/api/v1/common", commonRouter);
 
 const port_no = process.env.PORT || 5000;
 

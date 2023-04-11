@@ -1,6 +1,20 @@
 const mongoose = require("mongoose");
 
 const roomSchema = mongoose.Schema({
+  meetingID: {
+    type: "string",
+    default: null,
+    trim: true,
+  },
+  clg: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Clg",
+    required: true,
+  },
+  classroom: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     default: null,

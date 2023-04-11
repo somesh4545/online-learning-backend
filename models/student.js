@@ -30,6 +30,18 @@ const StudentSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
+
+  clg: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Clg",
+    required: true,
+  },
+
+  classroom: {
+    type: String,
+    required: true,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

@@ -21,9 +21,10 @@ const TeacherSchema = mongoose.Schema({
     unique: true,
     trim: true,
   },
-  emailVerified: {
-    type: Boolean,
-    default: false,
+  clg: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Clg",
+    required: true,
   },
   password: {
     type: String,

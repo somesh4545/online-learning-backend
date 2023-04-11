@@ -1,6 +1,7 @@
 const Teacher = require("../../models/teacher");
 const Room = require("../../models/room");
 const QUiz = require("../../models/quiz");
+const Clg = require("../../models/clg");
 
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const auth = require("../../middlewares/auth");
@@ -49,6 +50,8 @@ const createRoom = catchAsyncErrors(async (req, res) => {
   };
   if (req.body && req.body.title) {
     data.title = req.body.title;
+    data.clg = req.body.clg;
+    data.classroom = req.body.classroom;
   } else {
     return res
       .status(401)
@@ -95,13 +98,15 @@ const createRoom = catchAsyncErrors(async (req, res) => {
 const getTeacherRooms = catchAsyncErrors(async (req, res) => {
   const { teacher_id: teacherID } = req.params;
 
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 8;
+  var skip = (page - 1) * limit;
+
   const rooms = await Room.find({ creator: teacherID })
     .sort("-createdAt")
-    .populate({
-      path: "members",
-      model: "Student",
-    })
-    .limit(10);
+    .select("title quiz")
+    .skip(skip)
+    .limit(limit);
 
   if (!rooms) {
     return res.status(401).send({ success: false, message: "No data found" });
@@ -136,10 +141,32 @@ const getTeacherQuizzes = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const addNewClassroomByTeacher = catchAsyncErrors(async (req, res) => {
+  const { teacher_id: teacherID } = req.params;
+  const body = req.body;
+
+  const updateData = await Clg.findOneAndUpdate(
+    { _id: body.clg_id },
+    { $push: { classrooms: body.classroom } }
+  );
+
+  if (!updateData) {
+    return res
+      .status(401)
+      .send({ success: false, message: "couldn't add new classroom" });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "added new Classroom successfully",
+  });
+});
+
 module.exports = {
   createTeacherAccount,
   loginForTeacher,
   createRoom,
   getTeacherRooms,
   getTeacherQuizzes,
+  addNewClassroomByTeacher,
 };

@@ -9,6 +9,7 @@ const {
   createRoom,
   getTeacherRooms,
   getTeacherQuizzes,
+  addNewClassroomByTeacher,
 } = require("../controllers/Teacher/teacher");
 const verifyToken = require("../middlewares/auth");
 
@@ -33,5 +34,9 @@ router
 router
   .route("/:teacher_id/stats/avg-attention")
   .get(verifyToken, getAvgAttentionOfStudents);
+
+router
+  .route("/:teacher_id/add-new-classroom")
+  .patch(verifyToken, addNewClassroomByTeacher);
 
 module.exports = router;
