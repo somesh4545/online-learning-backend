@@ -42,10 +42,24 @@ const loginForStudent = catchAsyncErrors(async (req, res) => {
 
 const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
   const studentID = req.userId;
+  if (!req.body && !req.body.classroom) {
+    return res
+      .status(401)
+      .send({ success: false, message: "Missing parameters classroom" });
+  }
 
-  const rooms = await Room.find({ members: { $in: [studentID] } }).sort(
-    "-createdAt"
-  );
+  const classroom = req.body.classroom;
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 8;
+  var skip = (page - 1) * limit;
+
+  const rooms = await Room.find({ classroom: classroom })
+    .sort("-createdAt")
+    .skip(skip)
+    .limit(limit)
+    .select("title creator")
+    .populate("creator", "firstName");
 
   if (!rooms) {
     return res

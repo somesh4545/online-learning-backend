@@ -47,7 +47,7 @@ const roomSchema = mongoose.Schema({
     type: [
       {
         student: { type: mongoose.Schema.ObjectId, ref: "Student" },
-        attention: [{ type: Number, min: 0, max: 100 }],
+        attention: { type: Number, min: 0, max: 100 },
       },
     ],
     default: [],
