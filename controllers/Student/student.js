@@ -42,7 +42,7 @@ const loginForStudent = catchAsyncErrors(async (req, res) => {
 
 const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
   const studentID = req.userId;
-  if (!req.body && !req.body.classroom) {
+  if (!req.body || !req.body.classroom) {
     return res
       .status(401)
       .send({ success: false, message: "Missing parameters classroom" });
