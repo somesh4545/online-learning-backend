@@ -66,6 +66,9 @@ const addAttentionOfStudent = catchAsyncErrors(async (req, res) => {
       $addToSet: {
         analysis: { student: studentID, attention: body.attention },
       },
+      $inc: {
+        total_attention: body.attention,
+      },
     },
     {
       new: true,

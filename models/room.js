@@ -52,6 +52,10 @@ const roomSchema = mongoose.Schema({
     ],
     default: [],
   },
+  total_attention: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

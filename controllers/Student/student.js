@@ -49,12 +49,13 @@ const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
   }
 
   const classroom = req.body.classroom;
+  const clg = req.body.clg;
 
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 8;
   var skip = (page - 1) * limit;
 
-  const rooms = await Room.find({ classroom: classroom })
+  const rooms = await Room.find({ classroom: classroom, clg: clg })
     .sort("-createdAt")
     .skip(skip)
     .limit(limit)
