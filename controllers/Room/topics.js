@@ -1,5 +1,7 @@
 const Teacher = require("../../models/teacher");
 const Room = require("../../models/room");
+const Quiz = require("../../models/quiz");
+const Question = require("../../models/question");
 
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 
@@ -26,15 +28,20 @@ const summaryOfRoom = catchAsyncErrors(async (req, res) => {
 const addTopicToRoom = catchAsyncErrors(async (req, res) => {
   const teacherID = req.userId;
   const { id: roomID } = req.params;
-  const topic = req.body.topic;
-  if (topic == null) {
+  const summary = req.body.summary;
+
+  console.log(roomID, teacherID);
+  console.log(req.body);
+
+  const quiz = req.body.quiz;
+  if (summary == null || quiz == null) {
     return res.status(401).send({ success: false, message: "Invalid request" });
   }
 
   const updatedRoom = await Room.findOneAndUpdate(
     { _id: roomID, creator: teacherID },
     {
-      $push: { topics: topic },
+      $push: { topics: summary },
     },
     {
       new: true,
@@ -47,9 +54,36 @@ const addTopicToRoom = catchAsyncErrors(async (req, res) => {
       .status(401)
       .send({ success: false, message: "failed to update" });
   }
-  return res
-    .status(201)
-    .send({ success: true, message: "added topic to the room" });
+
+  const quizID = updatedRoom.quiz;
+  const data = {
+    text: req.body.quiz.question,
+    options: req.body.quiz.options,
+    correctAnswer: req.body.quiz.correct_answer,
+    explanation: req.body.quiz.explanation,
+  };
+
+  const newQuestion = await Question.create(data);
+
+  if (!newQuestion) {
+    return res
+      .status(401)
+      .send({ success: false, message: "Failed to create quiz" });
+  } else {
+    await Quiz.findOneAndUpdate(
+      { _id: quizID },
+      { $push: { questions: newQuestion._id } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Question added sucessfully",
+  });
 });
 
 module.exports = {

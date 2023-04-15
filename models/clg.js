@@ -8,6 +8,7 @@ const clgSchema = mongoose.Schema({
   classrooms: {
     type: [String],
     default: [],
+    unique: true,
   },
   city: {
     type: String,

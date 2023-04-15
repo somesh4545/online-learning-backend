@@ -88,9 +88,6 @@ const createRoom = catchAsyncErrors(async (req, res) => {
     }
   );
 
-  updatedRoom["redirect_url"] = req.body.redirect_url;
-  console.log(req.body.redirect_url);
-
   res.status(201).json({
     success: true,
     message: "Room created successfully with quiz instance",
@@ -151,7 +148,7 @@ const addNewClassroomByTeacher = catchAsyncErrors(async (req, res) => {
 
   const updateData = await Clg.findOneAndUpdate(
     { _id: body.clg_id },
-    { $push: { classrooms: body.classroom } }
+    { $addToSet: { classrooms: body.classroom } }
   );
 
   if (!updateData) {
