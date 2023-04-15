@@ -10,7 +10,7 @@ const getCountOfStudents = catchAsyncErrors(async (req, res) => {
 
   const recentRooms = await Room.find({ creator: teacherID })
     .sort("-createdAt")
-    .select("title members date avg_attention")
+    .select("title members createdAt avg_attention")
     .limit(10);
 
   const roomsWithMembersCount = recentRooms.map((room) => {
@@ -19,7 +19,7 @@ const getCountOfStudents = catchAsyncErrors(async (req, res) => {
       _id: room._id,
       title: room.title,
       membersCount: membersCount,
-      date: room.date,
+      createdAt: room.createdAt,
       avg_attention: room.avg_attention,
     };
   });
@@ -42,7 +42,7 @@ const getAvgAttentionOfStudents = catchAsyncErrors(async (req, res) => {
 
   const recentRooms = await Room.find({ creator: teacherID })
     .sort("-createdAt")
-    .select("title analysis date")
+    .select("title analysis createdAt")
     .limit(10);
 
   const roomsWithAvgAttention = recentRooms.map((room) => {
@@ -54,7 +54,7 @@ const getAvgAttentionOfStudents = catchAsyncErrors(async (req, res) => {
       _id: room._id,
       title: room.title,
       avgAttention: total_att / room.analysis.length,
-      date: room.date,
+      createdAt: room.createdAt,
     };
   });
 

@@ -143,8 +143,8 @@ const addResponse = catchAsyncErrors(async (req, res) => {
 const getAllResponses = catchAsyncErrors(async (req, res) => {
   const { quiz_id: quizID } = req.params;
   const responses = await Response.find({ quiz: quizID })
-    .populate("student")
-    .populate({ path: "answers.question", model: "Question" });
+    .populate("student", "firstName emailID")
+    .select("score total student createdAt");
 
   if (!responses) {
     return res

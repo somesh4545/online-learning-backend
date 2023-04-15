@@ -88,10 +88,14 @@ const createRoom = catchAsyncErrors(async (req, res) => {
     }
   );
 
+  updatedRoom["redirect_url"] = req.body.redirect_url;
+  console.log(req.body.redirect_url);
+
   res.status(201).json({
     success: true,
     message: "Room created successfully with quiz instance",
     data: updatedRoom,
+    redirect_url: req.body.redirect_url,
   });
 });
 

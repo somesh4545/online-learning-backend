@@ -25,6 +25,15 @@ const responseSchema = new Schema({
       },
     },
   ],
+
+  score: {
+    type: Number,
+    default: 0,
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
