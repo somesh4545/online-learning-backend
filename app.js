@@ -91,6 +91,7 @@ const start = async () => {
       });
 
       socket.on("update_attention", (data) => {
+        console.log("update ");
         socket.in(data._id).emit("joinee_attention", {
           student: data.student,
           attention: data.attention,
@@ -107,8 +108,10 @@ const start = async () => {
         console.log("all students left the session");
       });
 
-      socket.on("new_message", (payload) => {
-        var chat = JSON.parse(payload);
+      socket.on("share_quiz", (payload) => {
+        socket.in(payload._id).emit("quiz_created", {
+          link: payload.quiz_link,
+        });
       });
 
       socket.off("setup", () => {

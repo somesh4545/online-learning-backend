@@ -59,7 +59,7 @@ const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
     .sort("-createdAt")
     .skip(skip)
     .limit(limit)
-    .select("title creator")
+    .select("title creator createdAt")
     .populate("creator", "firstName");
 
   if (!rooms) {
@@ -75,8 +75,28 @@ const getRoomsJoinedByStud = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const getStudent = catchAsyncErrors(async (req, res) => {
+  const { studentID: studentID } = req.params;
+
+  const student = await Student.findOne({ _id: studentID });
+  if (!student) {
+    return res
+      .status(401)
+      .json({ success: false, message: "couldn't found the details" });
+  }
+
+  const token = student.generateJWT();
+
+  res.status(201).json({
+    success: true,
+    message: "student details",
+    data: { student: student, token: token },
+  });
+});
+
 module.exports = {
   createStudentAccount,
   loginForStudent,
   getRoomsJoinedByStud,
+  getStudent,
 };

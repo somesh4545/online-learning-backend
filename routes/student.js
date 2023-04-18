@@ -3,6 +3,7 @@ const {
   createStudentAccount,
   loginForStudent,
   getRoomsJoinedByStud,
+  getStudent,
 } = require("../controllers/Student/student");
 const verifyToken = require("../middlewares/auth");
 
@@ -12,6 +13,8 @@ router.route("/register").post(createStudentAccount);
 
 router.route("/login").post(loginForStudent);
 
-router.route("/rooms").get(verifyToken, getRoomsJoinedByStud);
+router.route("/rooms").post(verifyToken, getRoomsJoinedByStud);
+
+router.route("/:studentID").get(getStudent);
 
 module.exports = router;
