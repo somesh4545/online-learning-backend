@@ -30,9 +30,6 @@ const addTopicToRoom = catchAsyncErrors(async (req, res) => {
   const { id: roomID } = req.params;
   const summary = req.body.summary;
 
-  console.log(roomID, teacherID);
-  console.log(req.body);
-
   const quiz = req.body.quiz;
   if (summary == null || quiz == null) {
     return res.status(401).send({ success: false, message: "Invalid request" });
