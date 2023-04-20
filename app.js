@@ -49,7 +49,7 @@ app.use("/api/v1/personalization", personalizationRouter);
 // common router files
 app.use("/api/v1/common", commonRouter);
 
-const port_no = process.env.PORT || 5000;
+const port_no = process.env.PORT || 5001;
 
 const start = async () => {
   try {

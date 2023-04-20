@@ -12,7 +12,7 @@ const summaryOfRoom = catchAsyncErrors(async (req, res) => {
       path: "creator",
       select: "_id emailID firstName",
     })
-    .select("creator topics quiz");
+    .select("creator topics quiz title");
   if (!room) {
     return res
       .status(401)
