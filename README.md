@@ -42,7 +42,7 @@ Before you begin, make sure you have the following software installed on your sy
    ``` bash
    npm install
 
-3. Environment Variables:
+3. **Environment Variables:**
 
     Create a .env file in the root directory of the project to store environment variables. You'll need to define variables such as database connection details and API keys.
     
@@ -52,8 +52,8 @@ Before you begin, make sure you have the following software installed on your sy
     JWT_SECRET=ONLINE_LEARNING
     OPEN_AI=
     ```
-
-4.Start the Server:
+    
+4. **Start the Server:**
     ``` npm
     npm start
     ```
